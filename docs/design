@@ -1,0 +1,123 @@
+COMPONENTS
+============
+(/services)
+zmq forwarder device - /broker
+stats aggregator = /gator
+    * two versions- standalone which is launched from cron, calls gatherer plugins and
+                    writes to a storage backend, and a zmq reader version
+
+gatherer = /gatherer
+
+SOURCES/PLUGINS
+=======
+vcenter -
+    datastores
+        space - used, provisioned, size
+    hosts
+        memory - total, cap
+        vcpu - total, cap
+    cluster
+        vcpu -  total, cap, used
+        memory - total, cap
+linux -
+    memory - total, free, buffers, cached
+    swap - total, used, free
+    cpu - total
+    kvm.cpu - used
+    kvm.memory - used
+    ovs.port - used
+    fh - open, cap (/proc/sys/fs/file-nr)
+procurve -
+    vlans - used, limit
+    ports - used, total
+cisco -
+    vlans - used, limit
+    ports - used, total
+voltaire -
+    ports - used, total
+    partitions - used, total
+    temperature - current
+ups -
+    power load - current, max
+    battery - nominal, current
+    temperature - current
+    runtime - current
+
+
+
+DETAILS
+=======
+gatherer interface
+=====
+there will be an entry point group called griffinmcelroy.gatherer in which you can register gatherer plugins
+gatherer interface provided as part of that package
+
+configuration
+=====
+device configuration - python-config file which specifies each device, its type, and the collection module. includes
+credentials.
+
+hdfs ingestion
+=====
+* accept streaming input (one JSON object / sample)
+* if no file is current open, open one with a unique name (timestamped)
+* serialize and write to a file (enforce that the serialized content can contain no newlines)
+* upon writing to the file check if the new object would put it over a configurable size limit, if so
+  roll the file
+    * close the previous file
+    * write the file into hdfs using some transport or other (webhdfs, copyfromlocal+ssh)
+    * open a new file, write the new object
+
+postgres schema
+=====
+id: <sequence generated>
+data: <json>
+
+json data schema
+=====
+{
+  "timestamp": "2014-07-20T14:45:33-0400",
+  "site": "phl",
+  "deployment": "Orchestration",
+  "vendor": "Cisco",
+  "type": "nexus5000",
+  "id": "phlis74.oamp.sgns.net",
+  "data": {
+    "vlan": {
+      "curr": 32,
+      "max": 512
+    }
+  }
+}
+
+layout
+-----
+/deploy
+    fab.py
+/docker
+    hadoop
+    postgres
+    zmq-broker
+    zmq-gatherer
+    zmq-gator
+    standalone
+/src
+    /griffinmcelroy
+        /services
+            /gatherer
+                standalone.py
+                zmqwriter.py
+            /gator
+                standalone.py
+                zmqreader.py
+            /broker
+        /gatherer
+            /plugins
+                /vcenter
+                /procurve
+                /catalyst
+            interface.py
+        /storage
+            hdfs.py
+            pgsql.py
+        /config
