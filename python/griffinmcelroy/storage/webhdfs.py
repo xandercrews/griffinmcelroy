@@ -31,16 +31,16 @@ class WebHDFSSampleStorageBackend(SampleStorageInterface):
         self.docker = cfg.get('docker', False)
 
         if self.docker:
-            self.nameport = cfg.getByPath('hadoop.nameport', 57070) # nameport must proceed namehost
-            self.dataport = cfg.getByPath('hadoop.dataport', 57075) # dataport must proceed datahost
+            self.nameport = cfg.getByPath('hadoop.nameport', 50070) # nameport and dataport must proceed namehost and datahost
+            self.dataport = cfg.getByPath('hadoop.dataport', 50075)
             self.namehost = self._detect_hadoop_namehost()
             self.datahost = self._detect_hadoop_datahost()
             self.nameport = self._detect_hadoop_nameport()
             self.dataport = self._detect_hadoop_dataport()
         else:
-            self.nameport = cfg.getByPath('hadoop.nameport', 57070)
+            self.nameport = cfg.getByPath('hadoop.nameport', 50070)
             self.namehost = cfg.getByPath('hadoop.namehost')
-            self.dataport = cfg.getByPath('hadoop.dataport', 57075)
+            self.dataport = cfg.getByPath('hadoop.dataport', 50075)
             self.datahost = cfg.getByPath('hadoop.datahost')
 
         self.hadoopmethod = cfg.getByPath('hadoop.method', 'http')
@@ -85,7 +85,7 @@ class WebHDFSSampleStorageBackend(SampleStorageInterface):
         return HADOOP_NAME_HOST
 
     def _detect_hadoop_nameport(self):
-        HADOOP_NAME_PORT = os.environ.get('HADOOP_PORT_%d_TCP_PORT' % self.nameport, 57070)
+        HADOOP_NAME_PORT = os.environ.get('HADOOP_PORT_%d_TCP_PORT' % self.nameport, 50070)
         return HADOOP_NAME_PORT
 
     def _detect_hadoop_datahost(self):
@@ -93,7 +93,7 @@ class WebHDFSSampleStorageBackend(SampleStorageInterface):
         return HADOOP_DATA_HOST
 
     def _detect_hadoop_dataport(self):
-        HADOOP_DATA_PORT = os.environ.get('HADOOP_PORT_%d_TCP_PORT' % self.dataport, 57070)
+        HADOOP_DATA_PORT = os.environ.get('HADOOP_PORT_%d_TCP_PORT' % self.dataport, 50070)
         return HADOOP_DATA_PORT
 
     def _make_scratch_dir(self):

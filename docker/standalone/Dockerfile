@@ -24,4 +24,4 @@ ADD griffin-standalone.conf /conf/
 
 RUN chmod 644 /bin/*.sh
 
-CMD [ "sh", "/bin/bootstrap.sh", "griffin-standalone.conf" ]
+CMD [ "python2.7", "/src/bin/gatherer_standalone.py", "/conf/griffin-standalone.conf" ]
