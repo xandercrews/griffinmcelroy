@@ -46,5 +46,16 @@ if it succeeded in starting it should look something like this
     08/12/2014 08:33:54 AM - griffinmcelroy.storage.webhdfs - DEBUG - did format
     08/12/2014 08:33:54 AM - griffinmcelroy.storage.webhdfs - DEBUG - did format
     08/12/2014 08:33:54 AM - griffinmcelroy.services.gatherer.standalone - INFO - persisted 1 samples
+ 
+the webhdfs storage plugin will only upload sample files that have grown to 2MB by default (configurable), you can force it to flush by shutting it down to see something sooner.
 
-TODO - add docker config and containers for 0mq broker versions
+TODOS
+-----
+
+ * add docker config and containers for 0mq broker versions
+ * simplify configuration, make use of configurations consistent between components
+ * provide clean and docker-based (linking + environment) configuration for everything
+ * cisco source plugin for catalyst 2970 
+ * kvm source, possibly with zerorpc
+ * apc ups source plugin
+ * unshitify hp and voltaire plugins
