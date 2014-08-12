@@ -13,6 +13,12 @@ building hadoop (takes a while- upstream image has hundreds of layers?):
     pushd docker/hadoop;
     docker build --rm -t griffinmcelroy/hadoop .
     popd
+    
+building the target, monitored device (a linux box with snmpd running):
+
+    pushd docker/;
+    docker build --rm -t griffinmcelroy/demosnmpagent .
+    popd
 
 build the standalone gatherer and install griffinmcelroy:
 
