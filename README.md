@@ -16,7 +16,7 @@ building hadoop (takes a while- upstream image has hundreds of layers?):
     
 building the target, monitored device (a linux box with snmpd running):
 
-    pushd docker/;
+    pushd docker/demosnmpagent;
     docker build --rm -t griffinmcelroy/demosnmpagent .
     popd
 
