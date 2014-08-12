@@ -33,10 +33,10 @@ class WebHDFSSampleStorageBackend(SampleStorageInterface):
         if self.docker:
             self.nameport = cfg.getByPath('hadoop.nameport', 57070) # nameport must proceed namehost
             self.dataport = cfg.getByPath('hadoop.dataport', 57075) # dataport must proceed datahost
-            self.nameport = self._detect_hadoop_nameport()
-            self.dataport = self._detect_hadoop_dataport()
             self.namehost = self._detect_hadoop_namehost()
             self.datahost = self._detect_hadoop_datahost()
+            self.nameport = self._detect_hadoop_nameport()
+            self.dataport = self._detect_hadoop_dataport()
         else:
             self.nameport = cfg.getByPath('hadoop.nameport', 57070)
             self.namehost = cfg.getByPath('hadoop.namehost')

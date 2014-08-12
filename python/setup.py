@@ -21,6 +21,7 @@ setup(
             'vcenter = griffinmcelroy.gatherer.plugins.vcenter:VCenterGathererPlugin',
             'isr9024 = griffinmcelroy.gatherer.plugins.voltaire:ISR9024GathererPlugin',
             'procurve = griffinmcelroy.gatherer.plugins.procurve:ProcurveGathererPlugin',
+            'demosnmp = griffinmcelroy.gatherer.plugins.demosnmp:DemoSNMPGathererPlugin',
         ],
     },
 
@@ -36,6 +37,7 @@ setup(
         'SQLAlchemy==0.9.7',
         'psycopg2==2.5.3',
         'paramiko==1.14.0',
+        'pysnmp==4.2.5',
     ),
     tests_require=(
         'nose==1.3.3',

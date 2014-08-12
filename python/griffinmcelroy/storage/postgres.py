@@ -1,5 +1,6 @@
 __author__ = 'achmed'
 
+import os
 import contextlib
 
 from .interface import SampleStorageInterface
@@ -59,10 +60,21 @@ class DBSample(base):
 class PostgresSampleStorageBackend(SampleStorageInterface):
     def initialize(self, storagecfg):
         cfg = self.cfg = ConfigWrapper(other=storagecfg.get('postgres'))
-        self.connstring = cfg.get('connstring', 'postgresql+psycopg2://postgres:postgres@localhost:5432/griffin')
         self.poolrecycle = cfg.getByPath('pool.recycle', 600)
         self.poolsize = cfg.getByPath('pool.size', 2)
         self.sqlecho = cfg.getByPath('sqlecho', False)
+        self.docker = cfg.getByPath('docker', False)
+
+        if self.docker:
+            self.dbport = cfg.get('port', 5432)     # overridden by environment
+            self.dbhost = self._detect_postgres_addr()  # host must proceed port
+            self.dbport = self._detect_postgres_port()
+            self.dbuser = cfg.get('dbuser', 'test')
+            self.dbpass = cfg.get('dbpass', 'test')
+            self.db = cfg.get('db', 'test')
+            self.connstring = 'postgresql+psycopg2://%s:%s@%s:%s/%s' % (self.dbuser, self.dbpass, self.dbhost, self.dbport, self.db)
+        else:
+            self.connstring = cfg.get('connstring', 'postgresql+psycopg2://postgres:postgres@localhost:5432/griffin')
 
         self.engine = create_engine(self.connstring, echo=self.sqlecho, pool_size=self.poolsize, pool_recycle=self.poolrecycle)
         metadata.bind = self.engine
@@ -85,3 +97,11 @@ class PostgresSampleStorageBackend(SampleStorageInterface):
 
     def flush(self):
         pass
+
+    def _detect_postgres_port(self):
+        DB_NAME_PORT  = os.environ.get('DB_PORT_%d_TCP_PORT' % self.dbport, None)
+        return DB_NAME_PORT
+
+    def _detect_postgres_addr(self):
+        DB_NAME_ADDR  = os.environ.get('DB_PORT_%d_TCP_ADDR' % self.dbport, None)
+        return DB_NAME_ADDR

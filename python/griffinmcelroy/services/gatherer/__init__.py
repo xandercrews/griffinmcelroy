@@ -22,8 +22,8 @@ class Gatherer(object):
         for devicename, device in self.cfgdevices.iteritems():
             if not hasattr(device, 'type'):
                 raise Exception('missing device type for %s' % devicename)
-            if not hasattr(device, 'connstring'):
-                raise Exception('missing connection string for %s' % devicename)
+            if not hasattr(device, 'connstring') and not device.get('docker', False):
+                raise Exception('missing connection string for %s (and docker not enabled)' % devicename)
 
     def load_all_plugins(self):
         self.all_types = set(filter(None, [v.get('type', None) for d,v in self.cfgdevices.iteritems()]))
